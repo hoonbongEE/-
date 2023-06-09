@@ -14,10 +14,13 @@ function countEvenNumbersUpto5(numArr) {
     return count;
 }
 
+console.log('다시 수정해서 보냅니다!!!!');
+
 const result1 = countEvenNumbersUpto5([1, 2, 3, 4, 6, 8, 10, 12, 13, 14, 15, 16]);
 console.log(result1); // 출력 결과: 5
 
 const result2 = countEvenNumbersUpto5([1, 3, 5, 6, 8, 10]);
+
 console.log(result2); // 출력 결과: 3
 
 let number = 30;
