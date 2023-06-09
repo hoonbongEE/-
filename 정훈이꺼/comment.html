@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="comment.css">
+    <title>문서</title>
+</head>
+
+<body>
+    <!-- alert 창 -->
+    <div class="alert-box" id="alert">
+        <p>로그인창임</p>
+        ID:<br>
+        <input id="inputID" placeholder="아이디를 입력해주세요."><br>
+        PW:<br>
+        <input id="inputPw" placeholder="비밀번호를 입력해주세요"><br>
+        <button id="inBtn">로그인</button>
+        <button id="alertClose" onclick="알림창열닫('none')">닫기</button>
+    </div>
+
+    <!-- 코멘트 창 -->
+    <div class="comment-container">
+        <h2>코멘트</h2>
+        <form class="form-group">
+            <div class="div01">
+                <label>사용자명:</label>
+                <input type="text" id="name" placeholder="이름 입력">
+            </div>
+            <div class="div02">
+                <label>코멘트</label>
+                <textarea class="text01" placeholder="내용을 쓰세요."></textarea>
+            </div>
+            <button class="fromBtn" id="LBtn" onclick="submitComment()">게시</button>
+            <button class="remove" id="removeBtn">삭제</button>
+            <button id="login01" onclick="알림창열닫('block'); return false;">로그인</button>
+        </form>
+    </div>
+
+    <script>
+        // 아이디, 비번 alert 확인창
+        function 알림창열닫(파라미터) {
+            document.getElementById('alert').style.display = 파라미터;
+        }
+
+        // 데이터 불러오기(getItem)
+        const loginBtn = document.querySelector("#inBtn");
+        const deleteBtn = document.querySelector("#removeBtn");
+
+        function getValue() {
+            const ID = document.querySelector("#inputID").value;
+            const PASSWORD = localStorage.getItem(ID); // 키(Key)인 ID를 기준으로 값을 가져옴
+
+            if (PASSWORD) {
+                document.querySelector("#inputPw").value = PASSWORD; // 가져온 값을 비밀번호 input에 설정
+                알림창열닫('none'); // 로그인 성공 시 로그인 창 숨기기
+            } else {
+                alert("아이디 또는 비밀번호가 틀렸습니다.");
+            }
+        }
+
+        // 데이터 제거하기(removeItem)
+        function removeValue() {
+            const ID = document.querySelector("#inputID").value;
+            localStorage.removeItem(ID);
+        }
+
+        // 웹키 저장
+        function init() {
+            loginBtn.addEventListener("click", getValue);
+            deleteBtn.addEventListener("click", removeValue);
+        }
+
+        init();
+
+        // 삭제 버튼 클릭 시 기본 동작 막기
+        deleteBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+        });
+
+        // 코멘트 제출
+        function submitComment() {
+            const ID = document.querySelector("#inputID").value;
+            const commentContent = document.querySelector(".text01").value;
+
+            const PASSWORD = localStorage.getItem(ID);
+
+            if (PASSWORD) {
+                // 로그인 성공, 코멘트 작성 가능
+                const comment = {
+                    user: ID,
+                    content: commentContent
+                };
+
+                // 로컬 스토리지에서 저장된 코멘트 가져오기
+                const savedComments = localStorage.getItem('comments');
+                let comments = [];
+
+                if (savedComments) {
+                    comments = JSON.parse(savedComments);
+                }
+
+                // 새로운 코멘트 추가
+                comments.push(comment);
+
+                // 로컬 스토리지에 코멘트 저장
+                widow.localStorage.setItem('comments', JSON.stringify(comments));
+
+                alert("댓글 작성이 완료되었습니다.");
+            } else {
+                알림창열닫('block'); // 로그인 필요 시 로그인 창 보여주기
+                alert("로그인이 필요합니다. 올바른 아이디로 로그인해주세요.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 로그인 버튼 클릭 시 입력된 값 로컬 스토리지에 저장
+            loginBtn.addEventListener('click', () => {
+                const ID = document.querySelector("#inputID").value;
+                const PASSWORD = document.querySelector("#inputPw").value;
+                localStorage.setItem(ID, PASSWORD); // 로컬 스토리지에 아이디와 비밀번호 저장
+            });
+
+            // 페이지 로드 시 저장된 아이디가 있다면 입력 필드에 설정
+            const savedID = localStorage.getItem('savedID');
+            if (savedID) {
+                document.querySelector("#inputID").value = savedID;
+            }
+        });
+
+    </script>
+</body>
+
+</html>
